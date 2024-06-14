@@ -1,8 +1,43 @@
-import React from "react"
-import { View, Text, StyleSheet } from "react-native"
+import React, { useEffect, useState } from "react"
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native"
 import { PickerItem } from "./src/Picker"
+import { api } from "./src/services/api"
+
 
 export default function App() {
+
+  const [moedas, setMoedas] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadMoedas() {
+
+      const response = await api.get("all")
+
+      let arrayMoedas = [];
+
+      /*percorremos o response.data e inserimos um objeto 
+      com as chaves: key, label e value */
+      Object.keys(response.data).map((key) => {
+        arrayMoedas.push({
+          key: key,
+          label: key,
+          value: key,
+        })
+      })
+
+      setMoedas(arrayMoedas)
+      setLoading(false)
+    }
+
+    loadMoedas();
+  }, [])
+
+  if (loading) {
+    <View style={styles.backgroundLoading}>
+      <ActivityIndicator color="#fff" size="large" />
+    </View>
+  }
   return (
     <View style={styles.container}>
 
@@ -35,9 +70,13 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#000',
     paddingLeft: 5,
-    paddingTop: 5
-
-
+    paddingTop: 5,
+  },
+  backgroundLoading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#101215'
   }
 
 })
