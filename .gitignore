@@ -1,8 +1,0 @@
-__tests__
-.bundle
-android
-ios
-node_modules
-.eslintrc.js
-.prettierrc.js
-.watchmanconfig
