@@ -6,8 +6,9 @@ import { api } from "./src/services/api"
 
 export default function App() {
 
-  const [moedas, setMoedas] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [moedas, setMoedas] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [moedaSelecionada, setMoedaSelecionada] = useState(null)
 
   useEffect(() => {
     async function loadMoedas() {
@@ -27,6 +28,7 @@ export default function App() {
       })
 
       setMoedas(arrayMoedas)
+      setMoedaSelecionada(arrayMoedas[0].key)
       setLoading(false)
     }
 
@@ -45,7 +47,12 @@ export default function App() {
 
         <Text style={styles.titulo}>Selecione sua moeda</Text>
 
-        <PickerItem />
+        <PickerItem
+          moedas={moedas}
+          moedaSelecionada={moedaSelecionada}
+          onChange={(moeda) => setMoedaSelecionada(moeda)}
+        />
+
       </View>
     </View>
   )
