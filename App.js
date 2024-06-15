@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native"
+import { View, Text, StyleSheet, TextInput, ActivityIndicator, TouchableOpacity } from "react-native"
 import { PickerItem } from "./src/Picker"
 import { api } from "./src/services/api"
 
@@ -54,6 +54,25 @@ export default function App() {
         />
 
       </View>
+
+      <View style={styles.areaValor}>
+
+        <Text style={styles.titulo}>Digite um valor para conveter em R$</Text>
+
+        <TextInput
+          keyboardType="numeric"
+          style={styles.input}
+          placeholder="EX: 150"
+        />
+
+      </View>
+
+      <TouchableOpacity style={styles.botaoArea}>
+
+        <Text style={styles.botaoText}>Converter</Text>
+
+      </TouchableOpacity>
+
     </View>
   )
 }
@@ -71,6 +90,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
     padding: 8,
+    marginBottom: 1
   },
   titulo: {
     fontSize: 16,
@@ -83,7 +103,33 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#101215'
+    backgroundColor: '#101215',
+  },
+  areaValor: {
+    width: '90%',
+    backgroundColor: "#f9f9f9",
+    paddingTop: 8,
+    paddingBottom: 8,
+  },
+  input: {
+    width: '100%',
+    padding: 8,
+    fontSize: 18,
+    color: '#000',
+  },
+  botaoArea: {
+    width: '90%',
+    backgroundColor: '#fb4b57',
+    height: 45,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+  },
+  botaoText: {
+    color: "#000",
+    fontWeight: 'bold',
+    fontSize: 16
   }
 
 })
