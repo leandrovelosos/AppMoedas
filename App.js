@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { View, Text, StyleSheet, TextInput, ActivityIndicator, TouchableOpacity } from "react-native"
+import { View, Text, StyleSheet, TextInput, ActivityIndicator, TouchableOpacity, Keyboard } from "react-native"
 import { PickerItem } from "./src/Picker"
 import { api } from "./src/services/api"
 
@@ -9,6 +9,9 @@ export default function App() {
   const [moedas, setMoedas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [moedaSelecionada, setMoedaSelecionada] = useState(null)
+  const [moedaBValor, setMoedaBValor] = useState("")
+  const [valorMoeda, setValorMoeda] = useState(null)
+  const [valorConvertido, setValorConvertido] = useState(0)
 
   useEffect(() => {
     async function loadMoedas() {
@@ -29,16 +32,33 @@ export default function App() {
 
       setMoedas(arrayMoedas)
       setMoedaSelecionada(arrayMoedas[0].key)
-      setLoading(false)
+
+      setLoading(false);
     }
 
     loadMoedas();
   }, [])
 
+  async function converter() {
+    if (moedaBValor === 0 || moedaBValor === "" || moedaSelecionada === null) {
+      return;
+    }
+
+    const response = await api.get(`/all/${moedaSelecionada}-BRL`)
+    let resultado = (response.data[moedaSelecionada].ask * parseFloat(moedaBValor))
+
+    setValorConvertido(`${resultado.toLocaleString("pt-BR", { style: 'currency', currency: "BRL" })}`)
+    setValorMoeda(moedaBValor)
+
+    Keyboard.dismiss();
+  }
+
   if (loading) {
+    return(
     <View style={styles.backgroundLoading}>
       <ActivityIndicator color="#fff" size="large" />
     </View>
+    )
   }
   return (
     <View style={styles.container}>
@@ -63,16 +83,34 @@ export default function App() {
           keyboardType="numeric"
           style={styles.input}
           placeholder="EX: 150"
+          value={moedaBValor}
+          onChangeText={(valor) => setMoedaBValor(valor)}
         />
 
       </View>
 
-      <TouchableOpacity style={styles.botaoArea}>
+      <TouchableOpacity style={styles.botaoArea} onPress={converter}>
 
         <Text style={styles.botaoText}>Converter</Text>
 
       </TouchableOpacity>
 
+      {valorConvertido !== 0 && (
+        <View style={styles.areaResultado}>
+
+          <Text style={styles.valorResultado}>
+            {valorMoeda} {moedaSelecionada}
+          </Text>
+
+          <Text style={styles.legendaResultado}>
+            Corresponde a
+          </Text>
+
+          <Text style={styles.valorResultado}>
+            {valorConvertido}
+          </Text>
+        </View>
+      )}
     </View>
   )
 }
@@ -130,6 +168,26 @@ const styles = StyleSheet.create({
     color: "#000",
     fontWeight: 'bold',
     fontSize: 16
+  },
+  areaResultado: {
+    width: '90%',
+    backgroundColor: "#FFF",
+    marginTop: 34,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24
+
+  },
+  valorResultado: {
+    fontSize: 28,
+    color: '#000',
+    fontWeight: 'bold'
+  },
+  legendaResultado: {
+    fontSize: 18,
+    margin: 8,
+    color: "#000"
   }
 
 })
